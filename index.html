@@ -13,6 +13,9 @@ body {
 <script src="//cdn.jsdelivr.net/phaser/2.6.2/phaser.min.js"></script>
 </head>
 <body>
+	<audio autoplay loop>
+        <source src="audio/Oxia - Domino.mp3" type="audio/mpeg">
+		
 	<script type="text/javascript">
 		var game = new Phaser.Game(256, 240, Phaser.CANVAS, '', {
 			preload : preload,
@@ -42,6 +45,10 @@ body {
 
 			this.load.tilemap('level', 'assets/mariomapfinal.json', null,
 					Phaser.Tilemap.TILED_JSON);
+			this.load.audio('jump','audio/jump.wav');
+			this.load.audio('kling','audio/coin.wav');
+			this.load.audio('stomp','audio/stomp.wav');
+			
 		}
 
 		function create() {
@@ -123,6 +130,7 @@ body {
 				}
 
 				if (cursors.up.isDown && player.body.onFloor()) {
+					jump.play();
 					player.body.velocity.y = -190;
 					player.animations.stop();
 				}
@@ -138,6 +146,7 @@ body {
 
 		function coinOverlap(player, coin) {
 			coin.kill();
+			kling.play();
 			coinsCounter ++;
 			score += 10;
 			textScore.text = "SCORE : " + score ;
@@ -157,6 +166,7 @@ body {
 					score += 100;
 					textScore.text = "SCORE : " + score ;
 					goomba.kill();
+					stomp.play();
 				});
 			}else {					//kill player by goomba.				
 				if (lives === 0) {
