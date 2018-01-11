@@ -19,8 +19,15 @@ body {
 			create : create,
 			update : update
 		}, false, false);
-
+		
+		var scoreStyle = {font : "bold 10pt Arial",fill: "#000", boundsAlignH: "center", boundsAlignV: "middle"};
+		var livesStyle = {font : "bold 10pt Arial",fill :"#000" , boundsAlignH: "center", boundsAlignV: "middle"};
+		var score = 0;
+		var lives = 1;
+		var coinsCounter = 0;
+		
 		function preload() {
+			
 
 			//  We need this because the assets are on github pages
 			//  Remove the next 2 lines if running locally
@@ -83,6 +90,12 @@ body {
 			game.camera.follow(player);
 
 			cursors = game.input.keyboard.createCursorKeys();
+			
+			textScore = game.add.text(10,10,"SCORE : " + score, scoreStyle);
+			textScore.fixedToCamera=true;
+			
+			textLives = game.add.text(23,27,"Lives : " + lives, livesStyle);
+			textLives.fixedToCamera = true;
 		}
 
 		function update() {
@@ -125,6 +138,13 @@ body {
 
 		function coinOverlap(player, coin) {
 			coin.kill();
+			coinsCounter ++;
+			score += 10;
+			textScore.text = "SCORE : " + score ;
+			if(coinsCounter % 10 == 0){	// every 10 coins gain 1 life
+				lives++;
+				textLives.text = "Lives : " + lives;
+			}
 		}
 
 		function goombaOverlap(player, goomba) {
@@ -134,16 +154,25 @@ body {
 				goomba.body.enable = false;
 				player.body.velocity.y = -80;
 				game.time.events.add(Phaser.Timer.SECOND, function() {
+					score += 100;
+					textScore.text = "SCORE : " + score ;
 					goomba.kill();
 				});
-			} else {
-				player.frame = 6;
-				player.body.enable = false;
-				player.animations.stop();
-				game.time.events.add(Phaser.Timer.SECOND * 3, function() {
-					game.paused = true;
-				});
-			}
+			}else {					//kill player by goomba.				
+				if (lives === 0) {
+					textLives.text = " NONE";					
+				}
+				else {
+					lives--;														
+					player.frame = 6;
+					player.body.velocity.y = -190;
+					player.animations.stop();
+					game.time.events.add(Phaser.Timer.SECOND , function() {	player.body.enable = false; });
+					score = 0;
+					
+					game.state.restart();
+				}
+		  	  }
 		}
 	</script>
 </body>
