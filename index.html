@@ -52,6 +52,10 @@ body {
 		}
 
 		function create() {
+			kling = game.add.audio('kling');
+			jump = game.add.audio('jump');
+			stomp = game.add.audio('stomp');
+			
 			Phaser.Canvas.setImageRenderingCrisp(game.canvas)
 			game.scale.pageAlignHorizontally = true;
 			game.scale.pageAlignVertically = true
